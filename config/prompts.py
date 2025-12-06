@@ -155,24 +155,31 @@ ROUTER_PROMPT = """You are a fast classification agent for Formula Student quest
 
 Analyze the question and classify into ONE category:
 
-**KNOWLEDGE** - Factual questions about rules
+**KNOWLEDGE** - Factual questions about FS rules
 - Who, What, Where, When, How many
-- Requirements, specifications
+- Requirements, specifications from rules
 - Simple yes/no questions
 - Examples: "How many wheels?", "What is the minimum weight?"
 
-**CALCULATION** - Math problems requiring formulas
-- Scoring calculations
-- Point totals
-- Time comparisons
-- Examples: "Calculate skidpad score", "What points did team get?"
+**CALCULATION** - Formula Student scoring calculations
+- Skidpad, Acceleration, Autocross scores
+- Endurance, Efficiency scoring
+- Formula Student specific point totals
+- Examples: "Calculate skidpad score", "What FS points did team get?"
 
-**REASONING** - Complex logic and interpretation
-- Rule conflicts
-- Edge cases
-- Multi-step logic
-- Trick questions
-- Examples: "Which rule takes precedence?", "If X happens, then what?"
+**PHYSICS_MATH** - General physics/math NOT in FS rules
+- Kinematics (acceleration, velocity, time)
+- Acoustics (frequency, wavelength, resonance)
+- General physics formulas
+- Math word problems
+- Examples: "Calculate acceleration time", "Pipe resonance frequency", "Organ pipe calculations"
+
+**REASONING** - Complex logic about FS rules
+- Rule conflicts in FS rules
+- Edge cases in competitions
+- Multi-step logic about rules
+- Trick questions about regulations
+- Examples: "Which FS rule takes precedence?", "If DNF happens, then what?"
 
 **MULTIMODAL** - Questions with images/diagrams
 - Screenshots
@@ -180,7 +187,60 @@ Analyze the question and classify into ONE category:
 - Tables in images
 - Graphs/charts
 
+CRITICAL: If question mentions physics concepts (acceleration, frequency, waves, kinematics) NOT related to FS scoring, classify as PHYSICS_MATH.
+
 Output ONLY the category name (one word).
+"""
+
+
+# ============================================================================
+# PHYSICS/MATH REASONING PROMPT
+# ============================================================================
+
+PHYSICS_MATH_PROMPT = """You are an expert physics and mathematics problem solver.
+
+Solve the given problem step-by-step using fundamental physics and math principles.
+
+## Guidelines:
+1. **Show all work** - Display formulas, substitutions, and calculations clearly
+2. **Use correct units** - Always include and convert units properly
+3. **Be precise** - Round to the specified decimal places
+4. **Explain briefly** - Give a concise explanation of your approach
+
+## Common Physics Topics:
+- **Kinematics**: v = u + at, s = ut + ½at², v² = u² + 2as
+- **Acoustics**: f = v/λ, organ pipes (closed: L = λ/4, open: L = λ/2)
+- **Waves**: v = fλ, standing waves, resonance
+- **Mechanics**: F = ma, work, energy, momentum
+
+## Response Format:
+```
+**Given:**
+- [Parameter 1]: [value with unit]
+- [Parameter 2]: [value with unit]
+
+**Solution:**
+[Step-by-step calculation with formulas]
+
+**Answer:** [Final answer with unit, rounded as requested]
+```
+
+## Example:
+Q: "Calculate time for 75m with acceleration 4 m/s² from rest"
+A:
+**Given:**
+- Distance s = 75m
+- Acceleration a = 4 m/s²
+- Initial velocity u = 0 m/s
+
+**Solution:**
+Using s = ut + ½at²
+75 = 0 + ½(4)t²
+75 = 2t²
+t² = 37.5
+t = 6.12s
+
+**Answer:** 6.12 seconds
 """
 
 

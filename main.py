@@ -19,13 +19,13 @@ from src.agents import create_orchestrator_from_config
 def print_banner():
     """Print welcome banner"""
     print("""
-╔══════════════════════════════════════════════════════════════════════╗
-║                                                                      ║
-║        🏎️  FORMULA STUDENT AI ASSISTANT 🏎️                          ║
-║                                                                      ║
-║        Powered by Gemini 3.0 Pro + RAG + Formula Library           ║
-║                                                                      ║
-╚══════════════════════════════════════════════════════════════════════╝
+======================================================================
+
+        FORMULA STUDENT AI ASSISTANT
+
+        Powered by Gemini 3.0 Pro + RAG + Formula Library
+
+======================================================================
     """)
 
 
@@ -35,20 +35,20 @@ def main():
     print_banner()
 
     # Validate configuration
-    print("🔍 Validating configuration...")
+    print("[INIT] Validating configuration...")
     errors = validate_settings()
 
     if errors:
-        print("\n❌ Configuration errors found:")
+        print("\n[ERROR] Configuration errors found:")
         for error in errors:
-            print(f"   • {error}")
-        print("\n💡 Please check your .env file and ensure:")
+            print(f"   - {error}")
+        print("\n[INFO] Please check your .env file and ensure:")
         print("   1. GEMINI_API_KEY is set")
         print("   2. PDF files are in data/raw/")
         print("   3. Run 'python scripts/build_rag.py' to build the system")
         return 1
 
-    print("✅ Configuration valid\n")
+    print("[OK] Configuration valid\n")
 
     # Check if RAG is built
     embeddings_dir = settings.base_dir / "data" / "embeddings"
@@ -56,34 +56,34 @@ def main():
     rules_embeddings = embeddings_dir / "fs_rules_embeddings.json"
 
     if not handbook_embeddings.exists() or not rules_embeddings.exists():
-        print("⚠️  RAG system not built yet!")
-        print("\n📚 To build the RAG system, run:")
+        print("[WARN] RAG system not built yet!")
+        print("\n[INFO] To build the RAG system, run:")
         print("   python scripts/build_rag.py")
         print("\nThis will:")
-        print("   • Process PDF documents")
-        print("   • Create semantic chunks")
-        print("   • Generate embeddings")
-        print("   • Build vector store")
+        print("   - Process PDF documents")
+        print("   - Create semantic chunks")
+        print("   - Generate embeddings")
+        print("   - Build vector store")
         print()
 
         choice = input("Continue without RAG? (answer quality will be lower) [y/N]: ").strip().lower()
         if choice not in ['y', 'yes']:
-            print("\n👋 Exiting. Please run build_rag.py first.")
+            print("\n[EXIT] Exiting. Please run build_rag.py first.")
             return 0
 
     # Create orchestrator
-    print("\n🚀 Initializing AI system...")
+    print("\n[INIT] Initializing AI system...")
     print("=" * 70)
 
     try:
         orchestrator = create_orchestrator_from_config()
     except Exception as e:
-        print(f"\n❌ Failed to initialize system: {e}")
-        print("\n💡 Make sure you've run 'python scripts/build_rag.py' first")
+        print(f"\n[ERROR] Failed to initialize system: {e}")
+        print("\n[INFO] Make sure you've run 'python scripts/build_rag.py' first")
         return 1
 
-    print("\n✅ System ready!")
-    print("\n💡 Type 'help' for commands, 'quit' to exit")
+    print("\n[OK] System ready!")
+    print("\n[INFO] Type 'help' for commands, 'quit' to exit")
     print("=" * 70)
 
     # Start interactive mode
@@ -97,10 +97,10 @@ if __name__ == "__main__":
         exit_code = main()
         sys.exit(exit_code)
     except KeyboardInterrupt:
-        print("\n\n👋 Interrupted. Goodbye!")
+        print("\n\n[EXIT] Interrupted. Goodbye!")
         sys.exit(0)
     except Exception as e:
-        print(f"\n❌ Fatal error: {e}")
+        print(f"\n[ERROR] Fatal error: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

@@ -265,10 +265,10 @@ def process_all_documents(handbook_path: Path, rules_path: Path) -> Tuple[PDFDoc
 
     print("Processing FSA Handbook...")
     handbook = processor.process_document(handbook_path)
-    print(f"✓ Processed {handbook.total_pages} pages from FSA Handbook")
+    print(f"[OK] Processed {handbook.total_pages} pages from FSA Handbook")
 
     print("Processing FS Rules...")
     rules = processor.process_document(rules_path)
-    print(f"✓ Processed {rules.total_pages} pages from FS Rules")
+    print(f"[OK] Processed {rules.total_pages} pages from FS Rules")
 
     return handbook, rules

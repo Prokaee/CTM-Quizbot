@@ -267,7 +267,7 @@ def create_retriever_from_config() -> Retriever:
         top_k=settings.top_k_retrieval
     )
 
-    print("\n✓ Retriever ready!")
+    print("\n[OK] Retriever ready!")
     stats = retriever.get_statistics()
     print(f"  Total chunks indexed: {stats['vector_store']['total_chunks']}")
     print(f"  Default top-k: {stats['top_k_default']}")

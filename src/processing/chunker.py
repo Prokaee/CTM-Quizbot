@@ -5,7 +5,7 @@ Smart chunking strategy for Formula Student documents.
 Uses larger chunks to leverage Gemini 3.0's excellent context handling.
 """
 
-from typing import List, Dict, Optional
+from typing import List, Dict, Optional, Tuple
 from dataclasses import dataclass
 import re
 from .pdf_processor import PDFDocument, PDFPage
@@ -281,11 +281,11 @@ def chunk_documents(
     print("\nChunking FSA Handbook...")
     handbook_chunks = chunker.chunk_document(handbook_doc)
     stats = chunker.get_chunk_statistics(handbook_chunks)
-    print(f"✓ FSA Handbook: {stats['total_chunks']} chunks, avg size: {stats['avg_chunk_size']} chars")
+    print(f"[OK] FSA Handbook: {stats['total_chunks']} chunks, avg size: {stats['avg_chunk_size']} chars")
 
     print("\nChunking FS Rules...")
     rules_chunks = chunker.chunk_document(rules_doc)
     stats = chunker.get_chunk_statistics(rules_chunks)
-    print(f"✓ FS Rules: {stats['total_chunks']} chunks, avg size: {stats['avg_chunk_size']} chars")
+    print(f"[OK] FS Rules: {stats['total_chunks']} chunks, avg size: {stats['avg_chunk_size']} chars")
 
     return handbook_chunks, rules_chunks

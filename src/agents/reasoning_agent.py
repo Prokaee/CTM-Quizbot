@@ -10,7 +10,7 @@ from dataclasses import dataclass
 import google.generativeai as genai
 
 from config.gemini_config import create_reasoning_model, create_vision_model
-from config.prompts import REASONING_AGENT_PROMPT, create_question_prompt
+from config.prompts import REASONING_AGENT_PROMPT, PHYSICS_MATH_PROMPT, create_question_prompt
 from src.core.tools import create_formula_tools, execute_function_call, format_function_result_for_gemini
 from src.rag.retriever import Retriever, RetrievalResult
 
@@ -376,6 +376,47 @@ class ReasoningAgent:
     def clear_conversation(self) -> None:
         """Clear conversation history"""
         self.chat_session = None
+
+    def answer_physics_math(self, question: str) -> AgentResponse:
+        """
+        Answer physics/math questions using pure LLM reasoning (no RAG, no tools).
+
+        Args:
+            question: Physics or math question
+
+        Returns:
+            AgentResponse with calculation
+        """
+        # Create simple model without tools for pure reasoning
+        simple_model = create_reasoning_model()
+
+        # Use physics/math prompt
+        prompt = f"{PHYSICS_MATH_PROMPT}\n\n**Problem:**\n{question}\n\n**Solution:**"
+
+        try:
+            response = simple_model.generate_content(prompt)
+            answer_text = response.text if hasattr(response, 'text') else str(response)
+
+            return AgentResponse(
+                answer=answer_text,
+                rule_references=[],  # No rules for physics/math
+                confidence=0.85,  # Gemini is good at math
+                calculation_used="Pure LLM reasoning (physics/math)",
+                retrieval_used=False,
+                sources=None,
+                raw_response=response
+            )
+
+        except Exception as e:
+            return AgentResponse(
+                answer=f"Error solving physics/math problem: {str(e)}",
+                rule_references=[],
+                confidence=0.0,
+                calculation_used=None,
+                retrieval_used=False,
+                sources=None,
+                raw_response=None
+            )
 
 
 # ============================================================================

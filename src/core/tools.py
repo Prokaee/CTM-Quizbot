@@ -48,8 +48,7 @@ skidpad_declaration = FunctionDeclaration(
             },
             "p_max": {
                 "type": "number",
-                "description": "Maximum points available (default: 75.0)",
-                "default": 75.0
+                "description": "Maximum points available (default: 75.0)"
             }
         },
         "required": ["t_team", "t_max"]
@@ -81,8 +80,7 @@ acceleration_declaration = FunctionDeclaration(
             },
             "p_max": {
                 "type": "number",
-                "description": "Maximum points available (default: 75.0)",
-                "default": 75.0
+                "description": "Maximum points available (default: 75.0)"
             }
         },
         "required": ["t_team", "t_max"]
@@ -114,8 +112,7 @@ autocross_declaration = FunctionDeclaration(
             },
             "p_max": {
                 "type": "number",
-                "description": "Maximum points available (default: 100.0)",
-                "default": 100.0
+                "description": "Maximum points available (default: 100.0)"
             }
         },
         "required": ["t_team", "t_min"]
@@ -147,8 +144,7 @@ endurance_declaration = FunctionDeclaration(
             },
             "p_max": {
                 "type": "number",
-                "description": "Maximum points available (default: 250.0)",
-                "default": 250.0
+                "description": "Maximum points available (default: 250.0)"
             }
         },
         "required": ["t_team", "t_min"]
@@ -188,8 +184,7 @@ efficiency_declaration = FunctionDeclaration(
             },
             "p_max": {
                 "type": "number",
-                "description": "Maximum points available (default: 100.0)",
-                "default": 100.0
+                "description": "Maximum points available (default: 100.0)"
             }
         },
         "required": ["e_team", "e_min", "t_team_eff", "t_min_eff"]
@@ -222,8 +217,7 @@ cost_declaration = FunctionDeclaration(
             },
             "p_max": {
                 "type": "number",
-                "description": "Maximum points available (default: 100.0)",
-                "default": 100.0
+                "description": "Maximum points available (default: 100.0)"
             }
         },
         "required": ["cost_real", "cost_min"]

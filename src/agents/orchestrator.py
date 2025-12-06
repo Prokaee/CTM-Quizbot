@@ -74,7 +74,7 @@ class AgentOrchestrator:
                 question=question,
                 has_image=image is not None
             )
-            print(f"🧭 Routing: {routing_decision.question_type.value} (confidence: {routing_decision.confidence:.2f})")
+            print(f"[ROUTE] Type: {routing_decision.question_type.value} (confidence: {routing_decision.confidence:.2f})")
         else:
             # Default to REASONING if skipping
             from .router import QuestionType, RoutingDecision
@@ -84,28 +84,34 @@ class AgentOrchestrator:
                 reasoning="Routing skipped"
             )
 
-        # Step 2: Determine RAG usage
-        use_rag = self.router.should_use_rag(routing_decision.question_type)
+        # Step 2: Handle PHYSICS_MATH questions with pure reasoning
+        from .router import QuestionType
+        if routing_decision.question_type == QuestionType.PHYSICS_MATH:
+            print("[AGENT] Using pure LLM reasoning for physics/math...")
+            agent_response = self.reasoning_agent.answer_physics_math(question)
+        else:
+            # Step 3: Determine RAG usage
+            use_rag = self.router.should_use_rag(routing_decision.question_type)
 
-        # Step 3: Determine tool usage
-        use_tools = self.router.should_use_tools(routing_decision.question_type)
+            # Step 4: Determine tool usage
+            use_tools = self.router.should_use_tools(routing_decision.question_type)
 
-        # Update reasoning agent configuration
-        self.reasoning_agent.use_tools = use_tools
+            # Update reasoning agent configuration
+            self.reasoning_agent.use_tools = use_tools
 
-        # Step 4: Generate answer
-        print(f"🤖 Generating answer (RAG: {use_rag}, Tools: {use_tools})...")
+            # Step 5: Generate answer
+            print(f"[AGENT] Generating answer (RAG: {use_rag}, Tools: {use_tools})...")
 
-        agent_response = self.reasoning_agent.answer_question(
-            question=question,
-            image=image,
-            top_k_retrieval=5 if use_rag else 0
-        )
+            agent_response = self.reasoning_agent.answer_question(
+                question=question,
+                image=image,
+                top_k_retrieval=5 if use_rag else 0
+            )
 
-        # Step 5: Calculate processing time
+        # Step 6: Calculate processing time
         processing_time = time.time() - start_time
 
-        print(f"✅ Answer generated in {processing_time:.2f}s (confidence: {agent_response.confidence:.2f})")
+        print(f"[OK] Answer generated in {processing_time:.2f}s (confidence: {agent_response.confidence:.2f})")
 
         return OrchestratedResponse(
             answer=agent_response.answer,
@@ -188,10 +194,10 @@ class AgentOrchestrator:
 
         while True:
             try:
-                question = input("\n❓ Your question: ").strip()
+                question = input("\n[Q] Your question: ").strip()
 
                 if question.lower() in ['quit', 'exit', 'q']:
-                    print("\n👋 Goodbye!")
+                    print("\n[EXIT] Goodbye!")
                     break
 
                 if question.lower() == 'help':
@@ -210,13 +216,13 @@ class AgentOrchestrator:
 
                 # Print answer
                 print("\n" + "=" * 70)
-                print("📝 ANSWER:")
+                print("[ANSWER]:")
                 print("=" * 70)
                 print(response.answer)
 
                 # Print metadata
                 print("\n" + "-" * 70)
-                print("📊 METADATA:")
+                print("[METADATA]:")
                 print(f"  Type: {response.question_type.value}")
                 print(f"  Confidence: {response.agent_response.confidence:.1%}")
 
@@ -233,10 +239,10 @@ class AgentOrchestrator:
                 print("=" * 70)
 
             except KeyboardInterrupt:
-                print("\n\n👋 Goodbye!")
+                print("\n\n[EXIT] Goodbye!")
                 break
             except Exception as e:
-                print(f"\n❌ Error: {e}")
+                print(f"\n[ERROR] Error: {e}")
                 print("Please try again with a different question.")
 
     def _print_help(self):
@@ -279,7 +285,7 @@ The system will:
             print(f"Default top-k: {stats['top_k_default']}")
             print("=" * 70)
         else:
-            print("\n⚠️  No retriever configured (RAG disabled)")
+            print("\n[WARN]  No retriever configured (RAG disabled)")
 
 
 # ============================================================================
@@ -295,7 +301,7 @@ def create_orchestrator_from_config() -> AgentOrchestrator:
     """
     from src.rag.retriever import create_retriever_from_config
 
-    print("🚀 Initializing Formula Student AI Assistant...")
+    print("[INIT] Initializing Formula Student AI Assistant...")
     print("=" * 70)
 
     # Create retriever
@@ -304,7 +310,7 @@ def create_orchestrator_from_config() -> AgentOrchestrator:
     # Create orchestrator
     orchestrator = AgentOrchestrator(retriever=retriever)
 
-    print("\n✅ System ready!")
+    print("\n[OK] System ready!")
     print("=" * 70)
 
     return orchestrator

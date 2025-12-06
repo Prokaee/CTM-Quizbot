@@ -66,7 +66,7 @@ class VectorStore:
         for chunk in embedded_chunks:
             self.chunk_map[chunk.chunk_id] = chunk
 
-        print(f"✓ Added {len(embedded_chunks)} chunks to vector store")
+        print(f"[OK] Added {len(embedded_chunks)} chunks to vector store")
         print(f"  Total chunks in store: {len(self.chunks)}")
 
     def _normalize_vector(self, vector: List[float]) -> np.ndarray:
@@ -202,7 +202,7 @@ class VectorStore:
         with open(chunks_path, 'wb') as f:
             pickle.dump(self.chunks, f)
 
-        print(f"✓ Saved vector store to {save_path}")
+        print(f"[OK] Saved vector store to {save_path}")
 
     @classmethod
     def load(cls, load_path: Path) -> 'VectorStore':
@@ -233,7 +233,7 @@ class VectorStore:
         # Rebuild chunk map
         store.chunk_map = {chunk.chunk_id: chunk for chunk in chunks}
 
-        print(f"✓ Loaded vector store from {load_path}")
+        print(f"[OK] Loaded vector store from {load_path}")
         print(f"  Total chunks: {len(chunks)}")
 
         return store
@@ -380,6 +380,6 @@ def create_vector_store_from_embeddings(
             embedded_chunks = embedder.load_embeddings(path)
             store.add_chunks(embedded_chunks)
         else:
-            print(f"⚠️  Embeddings not found: {path}")
+            print(f"[WARN]  Embeddings not found: {path}")
 
     return store

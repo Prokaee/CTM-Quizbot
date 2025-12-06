@@ -7,7 +7,6 @@ for the Formula Student AI Pipeline.
 
 import google.generativeai as genai
 from google.generativeai import GenerativeModel
-from google.generativeai.types import GenerationConfig, SafetySetting, HarmCategory, HarmBlockThreshold
 from typing import Optional, List
 import os
 
@@ -20,45 +19,31 @@ from .settings import settings
 
 # For educational/quiz content, we use permissive safety settings
 # since we're dealing with technical Formula Student content
-SAFETY_SETTINGS = [
-    SafetySetting(
-        category=HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-        threshold=HarmBlockThreshold.BLOCK_ONLY_HIGH
-    ),
-    SafetySetting(
-        category=HarmCategory.HARM_CATEGORY_HARASSMENT,
-        threshold=HarmBlockThreshold.BLOCK_ONLY_HIGH
-    ),
-    SafetySetting(
-        category=HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-        threshold=HarmBlockThreshold.BLOCK_ONLY_HIGH
-    ),
-    SafetySetting(
-        category=HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-        threshold=HarmBlockThreshold.BLOCK_ONLY_HIGH
-    ),
-]
+SAFETY_SETTINGS = {
+    "HARM_CATEGORY_HATE_SPEECH": "BLOCK_ONLY_HIGH",
+    "HARM_CATEGORY_HARASSMENT": "BLOCK_ONLY_HIGH",
+    "HARM_CATEGORY_SEXUALLY_EXPLICIT": "BLOCK_ONLY_HIGH",
+    "HARM_CATEGORY_DANGEROUS_CONTENT": "BLOCK_ONLY_HIGH",
+}
 
 
 # ============================================================================
 # GENERATION CONFIGURATIONS
 # ============================================================================
 
-REASONING_CONFIG = GenerationConfig(
-    temperature=0.1,  # Low temperature for accurate, deterministic answers
-    top_p=0.95,
-    top_k=40,
-    max_output_tokens=8192,
-    response_mime_type="text/plain",
-)
+REASONING_CONFIG = {
+    "temperature": 0.1,
+    "top_p": 0.95,
+    "top_k": 40,
+    "max_output_tokens": 8192,
+}
 
-ROUTER_CONFIG = GenerationConfig(
-    temperature=0.0,  # Zero temperature for consistent routing
-    top_p=1.0,
-    top_k=1,
-    max_output_tokens=100,
-    response_mime_type="text/plain",
-)
+ROUTER_CONFIG = {
+    "temperature": 0.0,
+    "top_p": 1.0,
+    "top_k": 1,
+    "max_output_tokens": 100,
+}
 
 
 # ============================================================================
@@ -77,7 +62,7 @@ def initialize_gemini_api() -> None:
         )
 
     genai.configure(api_key=settings.gemini_api_key)
-    print("✓ Gemini API initialized")
+    print("[OK] Gemini API initialized")
 
 
 def create_reasoning_model(tools: Optional[List] = None) -> GenerativeModel:

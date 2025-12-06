@@ -167,7 +167,7 @@ class Embedder:
         with open(output_path, 'w', encoding='utf-8') as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
-        print(f"✓ Saved {len(embedded_chunks)} embeddings to {output_path}")
+        print(f"[OK] Saved {len(embedded_chunks)} embeddings to {output_path}")
 
     def load_embeddings(self, input_path: Path) -> List[EmbeddedChunk]:
         """
@@ -193,7 +193,7 @@ class Embedder:
             for item in data
         ]
 
-        print(f"✓ Loaded {len(embedded_chunks)} embeddings from {input_path}")
+        print(f"[OK] Loaded {len(embedded_chunks)} embeddings from {input_path}")
 
         return embedded_chunks
 
@@ -332,7 +332,7 @@ def create_embeddings_for_all_documents():
         print("=" * 70)
         embed_all_chunks_from_json(handbook_chunks, handbook_embeddings)
     else:
-        print(f"⚠️  FSA Handbook chunks not found at {handbook_chunks}")
+        print(f"[WARN]  FSA Handbook chunks not found at {handbook_chunks}")
 
     # Embed FS Rules
     rules_chunks = processed_dir / "fs_rules_chunks.json"
@@ -344,6 +344,6 @@ def create_embeddings_for_all_documents():
         print("=" * 70)
         embed_all_chunks_from_json(rules_chunks, rules_embeddings)
     else:
-        print(f"⚠️  FS Rules chunks not found at {rules_chunks}")
+        print(f"[WARN]  FS Rules chunks not found at {rules_chunks}")
 
-    print("\n✅ All embeddings generated successfully!")
+    print("\n[OK] All embeddings generated successfully!")

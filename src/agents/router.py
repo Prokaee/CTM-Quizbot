@@ -19,6 +19,7 @@ class QuestionType(Enum):
     CALCULATION = "CALCULATION"
     REASONING = "REASONING"
     MULTIMODAL = "MULTIMODAL"
+    PHYSICS_MATH = "PHYSICS_MATH"  # General physics/math not in rules
 
 
 @dataclass
@@ -69,7 +70,9 @@ class RouterAgent:
             classification = response.text.strip().upper()
 
             # Parse classification
-            if "KNOWLEDGE" in classification:
+            if "PHYSICS_MATH" in classification or "PHYSICS" in classification or "MATH" in classification:
+                question_type = QuestionType.PHYSICS_MATH
+            elif "KNOWLEDGE" in classification:
                 question_type = QuestionType.KNOWLEDGE
             elif "CALCULATION" in classification:
                 question_type = QuestionType.CALCULATION
@@ -106,8 +109,9 @@ class RouterAgent:
         Returns:
             True if RAG should be used
         """
-        # All types benefit from RAG except pure calculations with all params given
-        return True
+        # Physics/math questions don't need RAG (not in rules)
+        # All other types benefit from RAG
+        return question_type != QuestionType.PHYSICS_MATH
 
     def should_use_tools(self, question_type: QuestionType) -> bool:
         """
@@ -119,7 +123,8 @@ class RouterAgent:
         Returns:
             True if tools should be available
         """
-        # Tools needed for calculations and potentially reasoning
+        # Tools needed for Formula Student scoring calculations only
+        # Physics/math questions use pure LLM reasoning
         return question_type in [QuestionType.CALCULATION, QuestionType.REASONING, QuestionType.MULTIMODAL]
 
 
